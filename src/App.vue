@@ -1,42 +1,52 @@
 <script setup>
-import HelloWorld from './components/HelloWorld.vue'
+
+import { ref } from 'vue';
+import LoginPage from './components/LoginPage.vue';
+import PageNotFound from './components/PageNotFound.vue';
+
+const routes = {
+  '/': LoginPage,
+  '': LoginPage
+};
+
+const errors = ref({
+  email:[],
+  password: []
+})
+
+const onSubmit = async() => {
+  Object.assign(errors.value, {email: [], password: []});
+
+  if (/\w+@\w+\.\w+/.test(email.length)){
+    return 'Email incorreto. Informe novamente o seu email';
+  }
+
+  if (password.length == 0 ){
+    return 'Informe a sua senha';
+  }
+
+}
+
+const currentPath = ref(window.location.hash);
+window.addEventListener('hashchange', () => {
+  currentPath.value = window.location.hash;
+})
+
+const currentView = computed(() =>{
+  return routes[currentPath.value.slice(1)] || PageNotFound;
+
+});
+
+await fetch ('/submit', {
+  method: 'POST',
+  headers: {
+    'content-type': 'application/json'
+  },
+  body: JSON.stringify({ email: email.value, password: password.value })
+})
+
 </script>
-
 <template>
-  <header>
-    <link rel="stylesheet" type="text/css" href="style.css" media="screen" />
-    <img src="./images/github_logo.png" alt="Logo GitHub" width="60px" height="60px">
-    <h1>Sign in to Github</h1>
-  </header>
-  <body>
-    <form class="form-layout" name="form_login" method="POST" action="/tela_login">
-      <div class="form-control">
-        <label for="username" class="label">Username or email address</label>
-        <input type="text" class="input" name="username" placeholder="" required>
-      </div>
-      <div class="form-control">
-        <label for="password" class="label">Password</label>
-        <input type="password" class="input" name="password" required>
-        <a class="" href="/password_reset">Forgot password?</a>
-      </div>
-      <div>
-        <input class="submit-button" type="button" name="commit" value="Sign in">
-      </div>
-    </form>
-  </body>
+  <h1>Página Inicial</h1>
 </template>
-
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
+<style></style>
